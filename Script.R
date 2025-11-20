@@ -24,7 +24,7 @@ library(effects)
 ## 2. Load and clean data (WVS, SWIID, WID, WDI, and V-Dem)
 
 # Load WVS data
-df_raw <- read.csv("Data_WVS/WVS_Time_Series_1981-2022_csv_v5_0.csv")
+df_raw <- read.csv("Data/WVS_Time_Series_1981-2022_csv_v5_0.csv")
 
 # Data cleaning
 df <- df_raw %>%
@@ -175,7 +175,7 @@ df_wdi <- df_wdi %>%
 
 
 # Load SWIID data for economic inequality (post-tax Gini coefficient)
-load("Data_WVS/swiid9_9.rda")
+load("Data/swiid_inequality.rda")
 
 df_swiid <- swiid_summary %>%
   dplyr::select(country, year, gini_disp)
@@ -187,7 +187,7 @@ df_swiid <- df_swiid %>%
 
 
 # 2.4 Load WID data for economic inequality (post-tax Gini coefficient, retrieved with STATA WID command and imported into R)
-df_wid <- read_dta("Data_WVS/Gini_coefficient_post_tax_wid.dta")
+df_wid <- read_dta("Data/wid_inequality.dta")
 
 df_wid <- df_wid %>%
   filter(age == 992) %>%
@@ -203,7 +203,7 @@ df_wid$iso3c <- countrycode(df_wid$country, origin = "iso2c", destination = "iso
 
 
 # Varieties of Democracy data
-df_regime <- read.csv("Data_WVS/political-regime.csv")
+df_regime <- read.csv("Data/regime_score.csv")
 
 df_regime <- df_regime %>%
   rename(
@@ -230,7 +230,7 @@ df_macro_regime <- df_macro_regime %>%
   dplyr::select(iso3c, year, gdp_per_capita, gdp_growth, gini_coefficient_swiid_disp, gini_coefficient_wid_post, gini_coefficient_wdi, regime_score)
 
 
-# Filter for consolidated democracies that consistently have a V-Dem regime score greater than 1 since the start of WVS Wave 3 (Closed autocracy = 0, electoral autocracy = 1, electoral democracy = 2, liberal democracy = 3)
+# Filter for consolidated democracies that consistently have a V-Dem regime score greater than 1 since the start of WVS Wave 3 (closed autocracy = 0, electoral autocracy = 1, electoral democracy = 2, liberal democracy = 3)
 df_macro_regime <- df_macro_regime %>%
   filter(year > 1994) %>%
   group_by(iso3c) %>%
@@ -738,4 +738,5 @@ supplementary_2 <- modelsummary(supplementary_models_2,
   )
 
 gtsave(supplementary_2, "continuous_income_models.docx")
+
 
